@@ -53,6 +53,8 @@ const defaultProps = {
   // input related props
   startDatePlaceholderText: 'Start Date',
   endDatePlaceholderText: 'End Date',
+  startTimeDefault: "9:00",
+  endTimeDefault: "18:00",
   startDateAriaLabel: undefined,
   endDateAriaLabel: undefined,
   startDateTitleText: undefined,
@@ -429,8 +431,10 @@ class DateRangePicker extends React.PureComponent {
       focusedInput,
       startDate,
       startDateOffset,
+      startTimeDefault,
       endDate,
       endDateOffset,
+      endTimeDefault,
       minDate,
       maxDate,
       minimumNights,
@@ -513,8 +517,10 @@ class DateRangePicker extends React.PureComponent {
           focusedInput={focusedInput}
           startDate={startDate}
           startDateOffset={startDateOffset}
+          startTimeDefault={startTimeDefault}
           endDate={endDate}
           endDateOffset={endDateOffset}
+          endTimeDefault={endTimeDefault}
           minDate={minDate}
           maxDate={maxDate}
           monthFormat={monthFormat}
@@ -578,11 +584,13 @@ class DateRangePicker extends React.PureComponent {
       startDatePlaceholderText,
       startDateAriaLabel,
       startDateTitleText,
+      startTimeDefault,
       endDate,
       endDateId,
       endDatePlaceholderText,
       endDateAriaLabel,
       endDateTitleText,
+      endTimeDefault,
       focusedInput,
       screenReaderInputMessage,
       showClearDates,
@@ -629,12 +637,14 @@ class DateRangePicker extends React.PureComponent {
         isStartDateFocused={focusedInput === START_DATE}
         startDateAriaLabel={startDateAriaLabel}
         startDateTitleText={startDateTitleText}
+        startTimeDefault={startTimeDefault}
         endDate={endDate}
         endDateId={endDateId}
         endDatePlaceholderText={endDatePlaceholderText}
         isEndDateFocused={focusedInput === END_DATE}
         endDateAriaLabel={endDateAriaLabel}
         endDateTitleText={endDateTitleText}
+        endTimeDefault={endTimeDefault}
         displayFormat={displayFormat}
         showClearDates={showClearDates}
         showCaret={!withPortal && !withFullScreenPortal && !hideFang}

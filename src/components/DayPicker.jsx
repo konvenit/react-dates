@@ -58,6 +58,11 @@ const NEXT_NAV = 'next_nav';
 const propTypes = forbidExtraProps({
   ...withStylesPropTypes,
 
+  // time props
+  startTime: PropTypes.arrayOf(PropTypes.string),
+  endTime: PropTypes.arrayOf(PropTypes.string),
+  onTimesChange: PropTypes.func,
+
   // calendar presentation props
   enableOutsideDays: PropTypes.bool,
   numberOfMonths: PropTypes.number,
@@ -231,6 +236,8 @@ class DayPicker extends React.PureComponent {
       calendarInfoWidth: 0,
       monthTitleHeight: null,
       hasSetHeight: false,
+      startTime: props.startTime,
+      endTime: props.endTime,
     };
 
     this.setCalendarMonthWeeks(currentMonth);
@@ -290,9 +297,19 @@ class DayPicker extends React.PureComponent {
       orientation,
       renderMonthText,
       horizontalMonthPadding,
+      startTime,
+      endTime,
     } = nextProps;
     const { currentMonth } = this.state;
     const { currentMonth: nextCurrentMonth } = nextState;
+
+    if (this.props.startTime[0] !== nextProps.startTime[0] || this.props.startTime[1] !== nextProps.startTime[1]) {
+      this.setState({ startTime })
+    }
+
+    if (this.props.endTime[0] !== nextProps.endTime[0] || this.props.endTime[1] !== nextProps.endTime[1]) {
+      this.setState({ endTime })
+    }
 
     if (!hidden) {
       if (!this.hasSetInitialVisibleMonth) {
@@ -1034,6 +1051,8 @@ class DayPicker extends React.PureComponent {
       hasSetHeight,
       calendarInfoWidth,
       monthTitleHeight,
+      startTime,
+      endTime,
     } = this.state;
 
     const {
@@ -1045,6 +1064,7 @@ class DayPicker extends React.PureComponent {
       onDayClick,
       onDayMouseEnter,
       onDayMouseLeave,
+      onTimesChange,
       firstDayOfWeek,
       renderMonthText,
       renderCalendarDay,
@@ -1145,6 +1165,24 @@ class DayPicker extends React.PureComponent {
       marginTop: isHorizontal && withPortal ? -calendarMonthWidth / 2 : null,
     };
 
+    const updateTime = (field, index, value) => {
+      const current  = this.state[field].slice()
+      current[index] = value
+      this.setState({ [field]: current })
+    }
+
+    const commitTime = (field) => {
+      const hour   = parseInt(this.state[field][0])
+      const minute = parseInt(this.state[field][1])
+      if (hour >= 0 && hour <= 23 && minute >= 0 && minute <= 59) {
+        const result  = { startTime: this.state.startTime, endTime: this.state.endTime }
+        result[field] = [hour.toString().padStart(2, "0"), minute.toString().padStart(2, "0")]
+        onTimesChange(result.startTime, result.endTime)
+      } else {
+        this.setState({ [field]: this.props[field] })
+      }
+    }
+
     return (
       <div
         {...css(
@@ -1236,6 +1274,25 @@ class DayPicker extends React.PureComponent {
                   horizontalMonthPadding={horizontalMonthPadding}
                 />
                 {verticalScrollable && this.renderNavigation(NEXT_NAV)}
+              </div>
+
+              <div {...css(styles.TimePicker_container)}>
+                <div {...css(styles.TimePicker_partContainer)}>
+                  <label>Uhrzeit von</label>
+                  <div {...css(styles.TimePicker_partInputContainer)}>
+                    <input {...css(styles.TimePicker_partInput)} type="text" value={startTime[0]} onChange={(e) => updateTime("startTime", 0, e.target.value)} onBlur={(e) => commitTime("startTime")} />
+                    <div {...css(styles.TimePicker_partInputSeparator)} />
+                    <input {...css(styles.TimePicker_partInput)} type="text" value={startTime[1]} onChange={(e) => updateTime("startTime", 1, e.target.value)} onBlur={(e) => commitTime("startTime")} />
+                  </div>
+                </div>
+                <div {...css(styles.TimePicker_partContainer)}>
+                  <label>Uhrzeit bis</label>
+                  <div {...css(styles.TimePicker_partInputContainer)}>
+                    <input {...css(styles.TimePicker_partInput)} type="text" value={endTime[0]} onChange={(e) => updateTime("endTime", 0, e.target.value)} onBlur={(e) => commitTime("endTime")} />
+                    <div {...css(styles.TimePicker_partInputSeparator)} />
+                    <input {...css(styles.TimePicker_partInput)} type="text" value={endTime[1]} onChange={(e) => updateTime("endTime", 1, e.target.value)} onBlur={(e) => commitTime("endTime")} />
+                  </div>
+                </div>
               </div>
 
               {!verticalScrollable
@@ -1401,4 +1458,34 @@ export default withStyles(({
       },
     }),
   },
+
+  TimePicker_container: {
+    paddingBottom: "10px",
+  },
+
+  TimePicker_partContainer: {
+    display: "inline-block",
+    textAlign: "center",
+    width: "50%",
+  },
+  TimePicker_partInputContainer: {
+    background: "green",
+    borderRadius: "10px",
+    display: "inline-block",
+    padding: "5px",
+    marginLeft: "10px",
+  },
+  TimePicker_partInputSeparator: {
+    borderRight: "1px solid white",
+    display: "inline-block",
+    height: "1em",
+    verticalAlign: "middle",
+  },
+  TimePicker_partInput: {
+    background: "none",
+    border: "none",
+    color: "white",
+    display: "inline-block",
+    width: "20px"
+  }
 }), { pureComponent: typeof React.PureComponent !== 'undefined' })(DayPicker);

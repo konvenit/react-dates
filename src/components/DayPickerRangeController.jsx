@@ -50,6 +50,8 @@ const propTypes = forbidExtraProps({
   onDatesChange: PropTypes.func,
   startDateOffset: PropTypes.func,
   endDateOffset: PropTypes.func,
+  startTimeDefault: PropTypes.string,
+  endTimeDefault: PropTypes.string,
   minDate: momentPropTypes.momentObj,
   maxDate: momentPropTypes.momentObj,
 
@@ -207,6 +209,14 @@ const getChooseAvailableDatePhrase = (phrases, focusedInput) => {
   return phrases.chooseAvailableDate;
 };
 
+const extractTime = (date, defaultTime) => {
+  if (date) {
+    return [date.hour().toString().padStart(2, "0"), date.minute().toString().padStart(2, "0")]
+  } else {
+    return defaultTime.split(":").map((d) => d.padStart(2, "0"))
+  }
+}
+
 export default class DayPickerRangeController extends React.PureComponent {
   constructor(props) {
     super(props);
@@ -254,6 +264,8 @@ export default class DayPickerRangeController extends React.PureComponent {
         chooseAvailableDate,
       },
       visibleDays,
+      startTime: extractTime(props.startDate, props.startTimeDefault),
+      endTime: extractTime(props.endDate, props.endTimeDefault),
       disablePrev: this.shouldDisableMonthNavigation(props.minDate, currentMonth),
       disableNext: this.shouldDisableMonthNavigation(props.maxDate, currentMonth),
     };
@@ -261,6 +273,7 @@ export default class DayPickerRangeController extends React.PureComponent {
     this.onDayClick = this.onDayClick.bind(this);
     this.onDayMouseEnter = this.onDayMouseEnter.bind(this);
     this.onDayMouseLeave = this.onDayMouseLeave.bind(this);
+    this.onTimesChange = this.onTimesChange.bind(this);
     this.onPrevMonthClick = this.onPrevMonthClick.bind(this);
     this.onNextMonthClick = this.onNextMonthClick.bind(this);
     this.onMonthChange = this.onMonthChange.bind(this);
@@ -274,6 +287,8 @@ export default class DayPickerRangeController extends React.PureComponent {
     const {
       startDate,
       endDate,
+      startTimeDefault,
+      endTimeDefault,
       focusedInput,
       getMinNightsForHoverDate,
       minimumNights,
@@ -351,6 +366,7 @@ export default class DayPickerRangeController extends React.PureComponent {
     let modifiers = {};
 
     if (didStartDateChange) {
+      this.setState({ startTime: extractTime(startDate, startTimeDefault) })
       modifiers = this.deleteModifier(modifiers, prevStartDate, 'selected-start');
       modifiers = this.addModifier(modifiers, startDate, 'selected-start');
 
@@ -378,6 +394,7 @@ export default class DayPickerRangeController extends React.PureComponent {
     }
 
     if (didEndDateChange) {
+      this.setState({ endTime: extractTime(endDate, endTimeDefault) })
       modifiers = this.deleteModifier(modifiers, prevEndDate, 'selected-end');
       modifiers = this.addModifier(modifiers, endDate, 'selected-end');
 
@@ -603,6 +620,18 @@ export default class DayPickerRangeController extends React.PureComponent {
 
     let { startDate, endDate } = this.props;
 
+    const updateDates = (start, end) => {
+      if (start) {
+        start.hour(parseInt(this.state.startTime[0]))
+        start.minute(parseInt(this.state.startTime[1]))
+      }
+      if (end) {
+        end.hour(parseInt(this.state.endTime[0]))
+        end.minute(parseInt(this.state.endTime[1]))
+      }
+      onDatesChange({ startDate: start, endDate: end });
+    }
+
     if (startDateOffset || endDateOffset) {
       startDate = getSelectedDateOffset(startDateOffset, day);
       endDate = getSelectedDateOffset(endDateOffset, day);
@@ -611,7 +640,7 @@ export default class DayPickerRangeController extends React.PureComponent {
         return;
       }
 
-      onDatesChange({ startDate, endDate });
+      updateDates(startDate, endDate);
 
       if (!keepOpenOnDateSelect) {
         onFocusChange(null);
@@ -630,7 +659,7 @@ export default class DayPickerRangeController extends React.PureComponent {
         }
       }
 
-      onDatesChange({ startDate, endDate });
+      updateDates(startDate, endDate);
 
       if (isEndDateDisabled && !isStartDateAfterEndDate) {
         onFocusChange(null);
@@ -643,11 +672,11 @@ export default class DayPickerRangeController extends React.PureComponent {
 
       if (!startDate) {
         endDate = day;
-        onDatesChange({ startDate, endDate });
+        updateDates(startDate, endDate);
         onFocusChange(START_DATE);
       } else if (isInclusivelyAfterDay(day, firstAllowedEndDate)) {
         endDate = day;
-        onDatesChange({ startDate, endDate });
+        updateDates(startDate, endDate);
         if (!keepOpenOnDateSelect) {
           onFocusChange(null);
           onClose({ startDate, endDate });
@@ -657,16 +686,16 @@ export default class DayPickerRangeController extends React.PureComponent {
         && this.doesNotMeetMinimumNights(day)
       ) {
         endDate = day;
-        onDatesChange({ startDate, endDate });
+        updateDates(startDate, endDate);
       } else if (disabled !== START_DATE) {
         startDate = day;
         endDate = null;
-        onDatesChange({ startDate, endDate });
+        updateDates(startDate, endDate);
       } else {
-        onDatesChange({ startDate, endDate });
+        updateDates(startDate, endDate);
       }
     } else {
-      onDatesChange({ startDate, endDate });
+      updateDates(startDate, endDate);
     }
 
     onBlur();
@@ -905,6 +934,18 @@ export default class DayPickerRangeController extends React.PureComponent {
         ...modifiers,
       },
     });
+  }
+
+  onTimesChange(startTime, endTime) {
+    const fillTime = (base, time) => {
+      const result = base.clone()
+      result.hour(time[0])
+      result.minute(time[1])
+      return result
+    }
+    const startDate = this.props.startDate ? fillTime(this.props.startDate, startTime) : undefined
+    const endDate   = this.props.endDate ? fillTime(this.props.endDate, endTime) : undefined
+    this.props.onDatesChange({ startDate, endDate });
   }
 
   onPrevMonthClick() {
@@ -1330,6 +1371,8 @@ export default class DayPickerRangeController extends React.PureComponent {
     } = this.props;
 
     const {
+      startTime,
+      endTime,
       currentMonth,
       phrases,
       visibleDays,
@@ -1343,9 +1386,12 @@ export default class DayPickerRangeController extends React.PureComponent {
         enableOutsideDays={enableOutsideDays}
         modifiers={visibleDays}
         numberOfMonths={numberOfMonths}
+        startTime={startTime}
+        endTime={endTime}
         onDayClick={this.onDayClick}
         onDayMouseEnter={this.onDayMouseEnter}
         onDayMouseLeave={this.onDayMouseLeave}
+        onTimesChange={this.onTimesChange}
         onPrevMonthClick={this.onPrevMonthClick}
         onNextMonthClick={this.onNextMonthClick}
         onMonthChange={this.onMonthChange}

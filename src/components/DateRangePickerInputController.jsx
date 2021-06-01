@@ -36,6 +36,7 @@ const propTypes = forbidExtraProps({
   isStartDateFocused: PropTypes.bool,
   startDateAriaLabel: PropTypes.string,
   startDateTitleText: PropTypes.string,
+  startTimeDefault: PropTypes.string,
 
   endDate: momentPropTypes.momentObj,
   endDateId: PropTypes.string,
@@ -43,6 +44,7 @@ const propTypes = forbidExtraProps({
   isEndDateFocused: PropTypes.bool,
   endDateAriaLabel: PropTypes.string,
   endDateTitleText: PropTypes.string,
+  endTimeDefault: PropTypes.string,
 
   screenReaderMessage: PropTypes.string,
   showClearDates: PropTypes.bool,
