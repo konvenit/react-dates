@@ -205,6 +205,7 @@ export const defaultProps = {
 class DayPicker extends React.PureComponent {
   constructor(props) {
     super(props);
+    console.log("daypic", props.phrases, DayPickerPhrases)
 
     const currentMonth = props.hidden ? moment() : props.initialVisibleMonth();
 
@@ -1065,6 +1066,7 @@ class DayPicker extends React.PureComponent {
       onDayMouseEnter,
       onDayMouseLeave,
       onTimesChange,
+      onExplicitClose,
       firstDayOfWeek,
       renderMonthText,
       renderCalendarDay,
@@ -1278,21 +1280,25 @@ class DayPicker extends React.PureComponent {
 
               <div {...css(styles.TimePicker_container)}>
                 <div {...css(styles.TimePicker_partContainer)}>
-                  <label>Uhrzeit von</label>
+                  <label>{phrases.timeFromLabel}</label>
                   <div {...css(styles.TimePicker_partInputContainer)}>
-                    <input {...css(styles.TimePicker_partInput)} type="text" value={startTime[0]} onChange={(e) => updateTime("startTime", 0, e.target.value)} onBlur={(e) => commitTime("startTime")} />
+                    <input {...css(styles.TimePicker_partInput)} type="text" value={startTime && startTime[0]} onChange={(e) => updateTime("startTime", 0, e.target.value)} onBlur={(e) => commitTime("startTime")} />
                     <div {...css(styles.TimePicker_partInputSeparator)} />
-                    <input {...css(styles.TimePicker_partInput)} type="text" value={startTime[1]} onChange={(e) => updateTime("startTime", 1, e.target.value)} onBlur={(e) => commitTime("startTime")} />
+                    <input {...css(styles.TimePicker_partInput)} type="text" value={startTime && startTime[1]} onChange={(e) => updateTime("startTime", 1, e.target.value)} onBlur={(e) => commitTime("startTime")} />
                   </div>
                 </div>
                 <div {...css(styles.TimePicker_partContainer)}>
-                  <label>Uhrzeit bis</label>
+                  <label>{phrases.timeToLabel}</label>
                   <div {...css(styles.TimePicker_partInputContainer)}>
-                    <input {...css(styles.TimePicker_partInput)} type="text" value={endTime[0]} onChange={(e) => updateTime("endTime", 0, e.target.value)} onBlur={(e) => commitTime("endTime")} />
+                    <input {...css(styles.TimePicker_partInput)} type="text" value={endTime && endTime[0]} onChange={(e) => updateTime("endTime", 0, e.target.value)} onBlur={(e) => commitTime("endTime")} />
                     <div {...css(styles.TimePicker_partInputSeparator)} />
-                    <input {...css(styles.TimePicker_partInput)} type="text" value={endTime[1]} onChange={(e) => updateTime("endTime", 1, e.target.value)} onBlur={(e) => commitTime("endTime")} />
+                    <input {...css(styles.TimePicker_partInput)} type="text" value={endTime && endTime[1]} onChange={(e) => updateTime("endTime", 1, e.target.value)} onBlur={(e) => commitTime("endTime")} />
                   </div>
                 </div>
+              </div>
+
+              <div {...css(styles.TimePickerConfirm_container)}>
+                <div {...css(styles.TimePickerConfirm_button)} onClick={onExplicitClose}>{phrases.closeDatePicker}</div>
               </div>
 
               {!verticalScrollable
@@ -1487,5 +1493,19 @@ export default withStyles(({
     color: "white",
     display: "inline-block",
     width: "20px"
-  }
+  },
+
+  TimePickerConfirm_container: {
+    padding: "10px",
+    textAlign: "center",
+  },
+  TimePickerConfirm_button: {
+    background: "green",
+    borderRadius: "10px",
+    color: "white",
+    cursor: "pointer",
+    display: "inline-block",
+    fontWeight: "normal",
+    padding: "5px",
+  },
 }), { pureComponent: typeof React.PureComponent !== 'undefined' })(DayPicker);

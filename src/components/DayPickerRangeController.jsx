@@ -1355,6 +1355,7 @@ export default class DayPickerRangeController extends React.PureComponent {
       renderCalendarInfo,
       renderMonthElement,
       calendarInfoPosition,
+      onExplicitClose,
       onBlur,
       onShiftTab,
       onTab,
@@ -1388,6 +1389,7 @@ export default class DayPickerRangeController extends React.PureComponent {
         numberOfMonths={numberOfMonths}
         startTime={startTime}
         endTime={endTime}
+        onExplicitClose={onExplicitClose}
         onDayClick={this.onDayClick}
         onDayMouseEnter={this.onDayMouseEnter}
         onDayMouseLeave={this.onDayMouseLeave}

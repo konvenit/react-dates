@@ -25,6 +25,8 @@ const moveFocustoStartAndEndOfWeek = 'Go to the first or last day of a week.';
 const returnFocusToInput = 'Return to the date input field.';
 const keyboardForwardNavigationInstructions = 'Navigate forward to interact with the calendar and select a date. Press the question mark key to get the keyboard shortcuts for changing dates.';
 const keyboardBackwardNavigationInstructions = 'Navigate backward to interact with the calendar and select a date. Press the question mark key to get the keyboard shortcuts for changing dates.';
+const timeFromLabel = "Start Time";
+const timeToLabel = "End Time";
 
 const chooseAvailableStartDate = ({ date }) => `Choose ${date} as your check-in date. It’s available.`;
 const chooseAvailableEndDate = ({ date }) => `Choose ${date} as your check-out date. It’s available.`;
@@ -62,6 +64,8 @@ export default {
   returnFocusToInput,
   keyboardForwardNavigationInstructions,
   keyboardBackwardNavigationInstructions,
+  timeFromLabel,
+  timeToLabel,
 
   chooseAvailableStartDate,
   chooseAvailableEndDate,
@@ -98,6 +102,9 @@ export const DateRangePickerPhrases = {
   returnFocusToInput,
   keyboardForwardNavigationInstructions,
   keyboardBackwardNavigationInstructions,
+  timeFromLabel,
+  timeToLabel,
+
   chooseAvailableStartDate,
   chooseAvailableEndDate,
   dateIsUnavailable,
@@ -172,6 +179,9 @@ export const DayPickerPhrases = {
   moveFocusByOneMonth,
   moveFocustoStartAndEndOfWeek,
   returnFocusToInput,
+  timeFromLabel,
+  timeToLabel,
+
   chooseAvailableStartDate,
   chooseAvailableEndDate,
   chooseAvailableDate,

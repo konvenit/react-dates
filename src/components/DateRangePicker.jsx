@@ -148,6 +148,7 @@ class DateRangePicker extends React.PureComponent {
 
     this.isTouchDevice = false;
 
+    this.onExplicitClose = this.onExplicitClose.bind(this);
     this.onOutsideClick = this.onOutsideClick.bind(this);
     this.onDateRangePickerInputFocus = this.onDateRangePickerInputFocus.bind(this);
     this.onDayPickerFocus = this.onDayPickerFocus.bind(this);
@@ -201,16 +202,20 @@ class DateRangePicker extends React.PureComponent {
   }
 
   onOutsideClick(event) {
+    if (!this.isOpened()) return;
+    if (this.props.appendToBody && this.dayPickerContainer.contains(event.target)) return;
+
+    this.onExplicitClose()
+  }
+
+  onExplicitClose() {
     const {
       onFocusChange,
       onClose,
       startDate,
       endDate,
-      appendToBody,
     } = this.props;
-
     if (!this.isOpened()) return;
-    if (appendToBody && this.dayPickerContainer.contains(event.target)) return;
 
     this.setState({
       isDateRangePickerInputFocused: false,
@@ -514,6 +519,7 @@ class DateRangePicker extends React.PureComponent {
           onDatesChange={onDatesChange}
           onFocusChange={onFocusChange}
           onClose={onClose}
+          onExplicitClose={this.onExplicitClose}
           focusedInput={focusedInput}
           startDate={startDate}
           startDateOffset={startDateOffset}
