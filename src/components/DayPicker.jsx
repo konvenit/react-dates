@@ -103,6 +103,7 @@ const propTypes = forbidExtraProps({
   onYearChange: PropTypes.func,
   onGetNextScrollableMonths: PropTypes.func, // VERTICAL_SCROLLABLE daypickers only
   onGetPrevScrollableMonths: PropTypes.func, // VERTICAL_SCROLLABLE daypickers only
+  onExplicitClose: PropTypes.func,
 
   // month props
   renderMonthText: mutuallyExclusiveProps(PropTypes.func, 'renderMonthText', 'renderMonthElement'),
@@ -205,7 +206,6 @@ export const defaultProps = {
 class DayPicker extends React.PureComponent {
   constructor(props) {
     super(props);
-    console.log("daypic", props.phrases, DayPickerPhrases)
 
     const currentMonth = props.hidden ? moment() : props.initialVisibleMonth();
 

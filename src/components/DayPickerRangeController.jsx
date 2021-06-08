@@ -58,6 +58,7 @@ const propTypes = forbidExtraProps({
   focusedInput: FocusedInputShape,
   onFocusChange: PropTypes.func,
   onClose: PropTypes.func,
+  onExplicitClose: PropTypes.func,
 
   keepOpenOnDateSelect: PropTypes.bool,
   minimumNights: PropTypes.number,
