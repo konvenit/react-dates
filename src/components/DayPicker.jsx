@@ -1298,7 +1298,7 @@ class DayPicker extends React.PureComponent {
               </div>
 
               <div {...css(styles.TimePickerConfirm_container)}>
-                <div {...css(styles.TimePickerConfirm_button)} onClick={onExplicitClose}>{phrases.closeDatePicker}</div>
+                <button {...css(styles.TimePickerConfirm_button)} onClick={onExplicitClose}>{phrases.closeDatePicker}</button>
               </div>
 
               {!verticalScrollable
