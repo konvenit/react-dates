@@ -1,6 +1,6 @@
 import React from 'react';
 import moment from 'moment';
-import { css, withStyles, withStylesPropTypes } from 'react-with-styles';
+import { withStyles, withStylesPropTypes } from 'react-with-styles';
 import { Portal } from 'react-portal';
 import { forbidExtraProps } from 'airbnb-prop-types';
 import { addEventListener } from 'consolidated-events';
@@ -101,6 +101,7 @@ const defaultProps = {
   verticalHeight: null,
   transitionDuration: undefined,
   verticalSpacing: DEFAULT_VERTICAL_SPACING,
+  autoComplete: 'off',
   horizontalMonthPadding: undefined,
 
   // navigation related props
@@ -458,6 +459,7 @@ class DateRangePicker extends React.PureComponent {
       dayAriaLabelFormat,
       isRTL,
       weekDayFormat,
+      css,
       styles,
       verticalHeight,
       noBorder,
@@ -490,6 +492,7 @@ class DateRangePicker extends React.PureComponent {
     /* eslint-disable jsx-a11y/click-events-have-key-events */
     return (
       <div
+        key="day-picker"
         ref={this.setDayPickerContainerRef}
         {...css(
           styles.DateRangePicker_picker,
@@ -573,6 +576,7 @@ class DateRangePicker extends React.PureComponent {
             type="button"
             onClick={this.onOutsideClick}
             aria-label={phrases.closeDatePicker}
+            tabIndex="-1"
           >
             {closeIcon}
           </button>
@@ -608,6 +612,7 @@ class DateRangePicker extends React.PureComponent {
       disabled,
       required,
       readOnly,
+      autoComplete,
       openDirection,
       phrases,
       isOutsideRange,
@@ -626,6 +631,7 @@ class DateRangePicker extends React.PureComponent {
       verticalSpacing,
       small,
       regular,
+      css,
       styles,
     } = this.props;
 
@@ -683,6 +689,7 @@ class DateRangePicker extends React.PureComponent {
         small={small}
         regular={regular}
         verticalSpacing={verticalSpacing}
+        autoComplete={autoComplete}
       >
         {this.maybeRenderDayPickerWithPortal()}
       </DateRangePickerInputController>
