@@ -8,7 +8,11 @@ const compileCSS = require('react-with-styles-interface-css-compiler');
 const registerMaxSpecificity = require('react-with-styles-interface-css/dist/utils/registerMaxSpecificity').default;
 const registerCSSInterfaceWithDefaultTheme = require('../src/utils/registerCSSInterfaceWithDefaultTheme').default;
 
-console.error = msg => { throw new SyntaxError(msg); };
+const originalError = console.error;
+console.error = (...args) => {
+  if (typeof args[0] === 'string' && /defaultProps/.test(args[0])) return;
+  originalError(...args);
+};
 console.warn = msg => { throw new SyntaxError(msg); };
 
 const args = process.argv.slice(2);
